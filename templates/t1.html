@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+  <meta charset="UTF-8">
+  <title>Django表单</title>
+  <link type="text/css" href="/static/base.css" rel="external nofollow" rel="stylesheet" />
+</head>
+<body>
+  <table border="1">
+    <tr>
+      <th>user</th>
+      <th>publicKey</th>
+    </tr>
+    {% for item in li %}
+    <tr>
+      <td>{{ item.user }}</td>
+      <td>{{ item.publicKey }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  <form action="/db_handle/" method="post">
+    <p><input name="username" /></p>
+    <p><input name="password" /></p>
+    <p><input name="age" /></p>
+    <p><input type="submit" value="submit" /></p>
+  </form>
+</body>
+</html>
+
