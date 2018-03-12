@@ -1,0 +1,4 @@
+2018-03-02 09:09:15,195 [Thread-1:140714192729856] [django.server:124] [basehttp:log_message] [INFO]- "POST /asym-auth/register/ HTTP/1.1" 200 98
+2018-03-02 09:22:16,849 [Thread-3:140714192729856] [django.server:124] [basehttp:log_message] [INFO]- "POST /asym-auth/register/ HTTP/1.1" 200 98
+2018-03-02 09:25:44,011 [Thread-1:140346100610816] [django.server:124] [basehttp:log_message] [INFO]- "POST /asym-auth/register/ HTTP/1.1" 200 79
+2018-03-02 10:08:37,780 [Thread-1:139648395515648] [django.server:124] [basehttp:log_message] [ERROR]- "POST /asym-auth/register/ HTTP/1.1" 500 27

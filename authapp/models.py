@@ -9,10 +9,10 @@ from django.core.exceptions import ValidationError
 
 class Publickey(models.Model):
 
-    user= models.TextField()
-    key = models.TextField()
+    user= models.CharField(max_length=32,unique=True)
+    key = models.CharField(max_length=512)
 
 class Challenge(models.Model):
 
-    user = models.TextField()
-    challenge= models.TextField()
+    user = models.CharField(max_length=32,unique=True)
+    challenge= models.CharField(max_length=512)

@@ -11,6 +11,9 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
+import logging
+import django.utils.log
+import logging.handlers
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -81,16 +84,23 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR,'db.sqlite3'),
 },
 
+#    'default': {
+#        'ENGINE':'django.db.backends.mysql',
+#        'NAME':'asymmetricAuth',
+#        'USER':'debian-sys-maint',
+#        'PASSWORD':'UHnmwLQIkNeytPH1',
+#        'HOST':'',
+#        'PORT':'3306',
+#    }
     'default': {
-#        'ENGINE': 'django.db.backends.sqlite3',
-#        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
         'ENGINE':'django.db.backends.mysql',
         'NAME':'asymmetricAuth',
         'USER':'root',
-        'PASSWORD':'root',
-        'HOST':'',
+        'PASSWORD':'1qaz@WSX3edc$RFVyl',
+        'HOST':'172.16.25.112',
         'PORT':'3306',
     }
+
 }
 
 # Password validation
@@ -111,7 +121,87 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': True,
+    'formatters': {
+       'standard': {
+            'format': '%(asctime)s [%(threadName)s:%(thread)d] [%(name)s:%(lineno)d] [%(module)s:%(funcName)s] [%(levelname)s]- %(message)s'} 
+    },
+    'filters': {
+    },
+    'handlers': {
+        'mail_admins': {
+            'level': 'ERROR',
+            'class': 'django.utils.log.AdminEmailHandler',
+            'include_html': True,
+        },
+        'default': {
+            'level':'DEBUG',
+            'class':'logging.handlers.RotatingFileHandler',
+            'filename': './log/all.log',     #log file name
+            'maxBytes': 1024*1024*5,                  #file sise
+            'backupCount': 5,                         #log file number
+            'formatter':'standard',                   #log formatters
+        },
+        'error': {
+            'level':'ERROR',
+            'class':'logging.handlers.RotatingFileHandler',
+            'filename': './log/error.log',
+            'maxBytes':1024*1024*5,
+            'backupCount': 5,
+            'formatter':'standard',
+        },
+        'console':{
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'standard'
+        },
+        'request_handler': {
+            'level':'DEBUG',
+            'class':'logging.handlers.RotatingFileHandler',
+            'filename': './log/script.log', 
+            'maxBytes': 1024*1024*5, 
+            'backupCount': 5,
+            'formatter':'standard',
+        },
+        'scprits_handler': {
+            'level':'DEBUG',
+            'class':'logging.handlers.RotatingFileHandler',
+            'filename':'./log/script.log', 
+            'maxBytes': 1024*1024*5, 
+            'backupCount': 5,
+            'formatter':'standard',
+        }
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['default', 'console'],
+            'level': 'DEBUG',
+            'propagate': False 
+        },
+        'django.request': {
+            'handlers': ['request_handler'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        'scripts': { 
+            'handlers': ['scprits_handler'],
+            'level': 'INFO',
+            'propagate': False
+        },
+        'sourceDns.webdns.views': {
+            'handlers': ['default', 'error'],
+            'level': 'DEBUG',
+            'propagate': True
+        },
+        'sourceDns.webdns.util':{
+            'handlers': ['error'],
+            'level': 'ERROR',
+            'propagate': True
+        }
+    } 
+}
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
 
@@ -135,3 +225,4 @@ STATIC_URL = '/static/'
 #)
 STATIC_ROOT= os.path.join(BASE_DIR,"static/")
 
+JWT_EXP_DELTA_SECONDS = 604800 #7days

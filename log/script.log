@@ -1,0 +1,13 @@
+2018-03-02 10:08:37,747 [Thread-1:139648395515648] [django.request:135] [exception:handle_uncaught_exception] [ERROR]- Internal Server Error: /asym-auth/register/
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/usr/local/lib/python2.7/dist-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/usr/local/lib/python2.7/dist-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/mali/git/Auth/publicAuth/authapp/views.py", line 41, in RegisterView
+    key=request.POST['publickey']
+  File "/usr/local/lib/python2.7/dist-packages/django/utils/datastructures.py", line 85, in __getitem__
+    raise MultiValueDictKeyError(repr(key))
+MultiValueDictKeyError: "u'publickey'"

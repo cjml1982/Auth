@@ -6,10 +6,10 @@ import base64
 from Crypto.Hash import SHA
 
 
-with open('master-private.pem','r') as f:
+with open('master-private-pkcs8.pem','r') as f:
     private_pem=f.read()
 
-message = "46060"
+message = "62077"
 
 privatekey = RSA.importKey(private_pem)
 
@@ -18,6 +18,7 @@ signer = Signature_pkcs1_v1_5.new(privatekey)
 digest = SHA.new()
 digest.update(message)
 sign = signer.sign(digest)
+print sign
 signature = base64.b64encode(sign)
 
 print signature

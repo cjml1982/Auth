@@ -17,13 +17,14 @@ from django.conf.urls import url
 from django.contrib import admin
 from authapp.views import RegisterView 
 from authapp.views import RequestView
-from authapp.views import ResponseView,AuthView
+from authapp.views import ResponseView,AuthView,AuthUrlView
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^asym-auth/registration/',RegisterView),
-    url(r'^asym-auth/request/',RequestView),
+    url(r'^asym-auth/register/',RegisterView),
+    url(r'^asym-auth/authRequest/',RequestView),
     url(r'^asym-auth/response/',ResponseView),
-    url(r'^asym-auth/verify/(?P<function>(\w+))/(?P<id>(\d+))',AuthView),
+    url(r'^asym-auth/verify/',AuthView),
+    url(r'^asym-auth/verify/(?P<function>(\w+))/(?P<id>(\d+))',AuthUrlView),
 ]
 
