@@ -84,19 +84,11 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR,'db.sqlite3'),
 },
 
-#    'default': {
-#        'ENGINE':'django.db.backends.mysql',
-#        'NAME':'asymmetricAuth',
-#        'USER':'debian-sys-maint',
-#        'PASSWORD':'UHnmwLQIkNeytPH1',
-#        'HOST':'',
-#        'PORT':'3306',
-#    }
     'default': {
         'ENGINE':'django.db.backends.mysql',
         'NAME':'asymmetricAuth',
-        'USER':'root',
-        'PASSWORD':'1qaz@WSX3edc$RFVyl',
+        'USER':'auth',
+        'PASSWORD':'9ijn*UHB7ygv6TFCyl',
         'HOST':'172.16.25.112',
         'PORT':'3306',
     }
@@ -225,4 +217,4 @@ STATIC_URL = '/static/'
 #)
 STATIC_ROOT= os.path.join(BASE_DIR,"static/")
 
-JWT_EXP_DELTA_SECONDS = 604800 #7days
+#JWT_EXP_DELTA_SECONDS = 604800 #7days

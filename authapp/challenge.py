@@ -28,7 +28,7 @@ def getChallenge(usertemp):
 def deleteChallenge(usertemp):
     logger.info("Enter function deleteChallenge,user=%s",usertemp)
     try:
-        models.Challenges.objects.filter(user=usertemp).delete()
+        models.Challenge.objects.filter(user=usertemp).delete()
     except Exception,e:
         logger.error(e)
 

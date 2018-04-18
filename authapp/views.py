@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+#-*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
 from django.shortcuts import render
@@ -11,6 +11,7 @@ from authapp.challenge import getChallenge,deleteChallenge
 from authapp.response import responseVerify
 from authapp.authJwt import create_jwt,verify_jwt
 from rsaKey import checkKeyFormat
+from authapp.authHMAC import getHMAC,verifyHMAC
 
 import logging
 
@@ -22,7 +23,7 @@ logger = logging.getLogger('django')
 def RegisterView(request):
 
     if request.method !="POST":
-        return JsonResponse({"result":"error","message":"null","error":{"code":-1,"info":"Not use POST method"}})
+        return JsonResponse({"result":"error","message":"null","error":{"code":-103,"info":"Not use POST method"}})
        
     try:
         #if the user already registered
@@ -42,7 +43,9 @@ def RegisterView(request):
     key=request.POST['publickey']
 
     logger.info("Register user=%s,key=%s",user,key)
-    #key=key.replace(" ","+")
+
+    #maybe the publickey base64 code, hase '+' simble,the base64 code '+' would be transfer to a blank space, the blank space should be transfer to '+' again
+    key=key.replace(" ","+")
 
     result = checkKeyFormat(user,key)
     if (True == result):
@@ -59,7 +62,7 @@ def RegisterView(request):
 def RequestView(request):
 
     if request.method != "POST":
-        return JsonResponse({"result":"error","message":"null","error":{"code":-1,"info":"Not use POST method"}})
+        return JsonResponse({"result":"error","message":"null","error":{"code":-103,"info":"Not use POST method"}})
 
     try:
         usertemp = models.Publickey.objects.filter(user=request.POST['user'])
@@ -83,7 +86,7 @@ def RequestView(request):
 def ResponseView(request):
 
     if request.method != "POST":
-        return JsonResponse({"result":"error","message":"null","error":{"code":-1,"info":"Not use POST method"}})
+        return JsonResponse({"result":"error","message":"null","error":{"code":-103,"info":"Not use POST method"}})
 
     try:
         user_dict = models.Publickey.objects.filter(user=request.POST['user'])
@@ -122,7 +125,7 @@ def ResponseView(request):
 
 def AuthView(request):
     if request.method != 'POST':
-        return JsonResponse({"result":"error","message":"null","error":{"code":-1,"info":"Not use POST method"}})
+        return JsonResponse({"result":"error","message":"null","error":{"code":-103,"info":"Not use POST method"}})
 
     try:
         user_dict = models.Publickey.objects.filter(user=request.POST['user'])
@@ -153,13 +156,12 @@ def AuthView(request):
 
 
 #reserved for further function
-def AuthUrlView(request,**kwargs):
+def UpdateView(request,**kwargs):
     #if 'Authorization' in request.headers:
-    function = kwargs.get('function',None)
-    urlid = kwargs.get('id',None)
-    print function, urlid
+    functiontemp = kwargs.get('function',None)
+    #urlid = kwargs.get('id',None)
     if request.method != 'POST':
-        return JsonResponse({"result":"error","message":"null","error":{"code":-1,"info":"Not use POST method"}})
+        return JsonResponse({"result":"error","message":"null","error":{"code":-103,"info":"Not use POST method"}})
 
     try:
         user_dict = models.Publickey.objects.filter(user=request.POST['user'])
@@ -172,7 +174,7 @@ def AuthUrlView(request,**kwargs):
 
     usertemp = request.POST['user']
     authjwt= request.POST['Authorization']
- 
+
     #print authjwt
     try:
         result = verify_jwt(usertemp,authjwt)
@@ -180,7 +182,7 @@ def AuthUrlView(request,**kwargs):
         logger.error(e)
 
     if (True == result):
-        return JsonResponse({"result":"success","message":{"name":"Auth Success"},"error":"null"})
+        logger.info("JWT vefify success,auth user=%s, jwt=%s",usertemp,authjwt)
     elif (False==result):
         return JsonResponse({"result":"error","message":"null","error":{"code":-401,"info":"JWT verify fail"}})
     elif('expired'==result):
@@ -188,4 +190,71 @@ def AuthUrlView(request,**kwargs):
     elif('unAuth'==result):
         return JsonResponse({"result":"error","message":"null","error":{"code":-403,"info":"User has no permissions"}})
 
+    #function process
+    if ('updatePublickey'==functiontemp):
+        keytemp=request.POST['publickey']
+        #replace the blank space to "+"
+        keytemp=keytemp.replace(" ","+")
+
+        #check the public key format
+        result = checkKeyFormat(usertemp,keytemp)
+        if (True == result):
+            try:
+                #update the user with publickey
+                models.Publickey.objects.filter(user=usertemp).update(key=keytemp)
+            except Exception,e:
+                logger.error(e)
+
+            return JsonResponse({"result":"success","message":{"name":"Publickey update Success"},"error":"null"})
+        else:
+            return JsonResponse({"result":"error","message":"null","error":{"code":-102,"info":"Public key format error"}})
+
+    elif ('deleteUser'==functiontemp):
+        try:
+            models.Publickey.objects.filter(user=usertemp).delete()
+        except Exception,e:
+            logger.error(e)
+
+        return JsonResponse({"result":"success","message":{"name":"Delete User Success"},"error":"null"})
+
+
+    else:
+        return JsonResponse({"result":"error","message":"null","error":{"code":-202,"info":"The update interface not exist"}})
+
+
+def AdminView(request,**kwargs):
+
+    if request.method !="POST":
+        return JsonResponse({"result":"error","message":"null","error":{"code":-103,"info":"Not use POST method"}})
+
+    functiontemp = kwargs.get('function',None)
+
+    try:
+        user_dict = models.Publickey.objects.filter(user=request.POST['user'])
+    except Exception,e:
+        logger.error(e)
+
+    #if user not exist
+    if not user_dict:
+        return JsonResponse({"result":"error","message":"null","error":{"code":-201,"info":"User not exist"}})
+
+    usertemp = request.POST['user']
+    authHMAC= request.POST['Authorization']
+
+    result = verifyHMAC(authHMAC,usertemp)
+
+    if(False == result):
+        return JsonResponse({"result":"error","message":"null","error":{"code":-104,"info":"The admin auth fail"}})
+
+    #function process
+    if ('deleteUser'==functiontemp):
+        try:
+            models.Publickey.objects.filter(user=usertemp).delete()
+        except Exception,e:
+            logger.error(e)
+
+        return JsonResponse({"result":"success","message":{"name":"Delete User Success"},"error":"null"})
+
+    else:
+        return JsonResponse({"result":"error","message":"null","error":{"code":-202,"info":"The update interface not exist"}})
 

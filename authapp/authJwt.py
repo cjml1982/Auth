@@ -5,13 +5,13 @@ import base64
 from Crypto.PublicKey import RSA
 import json
 import logging
-from django.conf import settings #get JWT_EXP_DELTA_SECONDS from the settings file
+#from django.conf import settings #get JWT_EXP_DELTA_SECONDS from the settings file
 
 logger= logging.getLogger("django")
 
 JWT_SECRET="!QAZ@WSX#EDC$RFV%TGB6yhn7ujm8ik,"
 JWT_ALGORITHM='HS256'
-#JWT_EXP_DELTA_SECONDS = 604800 #7days
+JWT_EXP_DELTA_SECONDS = 604800 #7days
 
 def create_jwt(usertemp):
     logger.info("Enter function create_jwt,user=%s",usertemp)

@@ -17,7 +17,7 @@ from django.conf.urls import url
 from django.contrib import admin
 from authapp.views import RegisterView 
 from authapp.views import RequestView
-from authapp.views import ResponseView,AuthView,AuthUrlView
+from authapp.views import ResponseView,AuthView,UpdateView,AdminView
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -25,6 +25,8 @@ urlpatterns = [
     url(r'^asym-auth/authRequest/',RequestView),
     url(r'^asym-auth/response/',ResponseView),
     url(r'^asym-auth/verify/',AuthView),
-    url(r'^asym-auth/verify/(?P<function>(\w+))/(?P<id>(\d+))',AuthUrlView),
+    url(r'^asym-auth/update/(?P<function>(\w+))',UpdateView),
+    url(r'^asym-auth/admin/(?P<function>(\w+))',AdminView),
+    #url(r'^asym-auth/update/(?P<function>(\w+))/(?P<id>(\d+))',UpdateView),
 ]
 
