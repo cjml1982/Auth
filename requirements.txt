@@ -51,7 +51,7 @@ pkginfo==1.4.1
 prompt-toolkit==1.0.15
 psycopg2==2.7.3.2
 ptyprocess==0.5.2
-py==1.5.2
+py==1.10.0
 pyasn1==0.4.2
 pycparser==2.18
 pycryptodome==3.4.8
